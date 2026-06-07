@@ -1,6 +1,7 @@
 package com.br.taskmanager.controllers;
 import java.util.ArrayList;
 
+import com.br.taskmanager.exceptions.ListaVaziaException;
 import com.br.taskmanager.models.Tarefa;
 
 public class TaskManager {
@@ -17,9 +18,9 @@ public class TaskManager {
 		}
 		arrayTarefas.add(tarefa);
 	}
-	public void listarTarefas() {
+	public void listarTarefas() throws ListaVaziaException {
 		if (arrayTarefas.isEmpty()) {
-			throw new IllegalStateException("Lista está vazia.");
+			throw new ListaVaziaException("Lista está vazia.");
 		}
 		for (Tarefa tarefa: arrayTarefas) {
 			System.out.println(tarefa);

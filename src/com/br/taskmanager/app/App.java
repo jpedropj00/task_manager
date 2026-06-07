@@ -3,6 +3,7 @@ package com.br.taskmanager.app;
 import java.util.Scanner;
 
 import com.br.taskmanager.controllers.TaskManager;
+import com.br.taskmanager.exceptions.ListaVaziaException;
 import com.br.taskmanager.models.Tarefa;
 
 public class App {
@@ -37,7 +38,7 @@ public class App {
 			case "2":
 				try {
 					taskManager.listarTarefas();
-				} catch(IllegalStateException e) {
+				} catch(ListaVaziaException e) {
 					System.out.println("Erro: " + e.getMessage());
 				}
 				break;
@@ -48,17 +49,17 @@ public class App {
 					String tituloVerificar = sc.nextLine();
 					taskManager.concluirTarefa(tituloVerificar);
 				
-				} catch(IllegalStateException | IllegalArgumentException e) {
+				} catch(ListaVaziaException | IllegalArgumentException e) {
 					System.out.println("Erro: " + e.getMessage());
 				}
 				break;
 			case "4":
 				try {
 					taskManager.listarTarefas();
-					System.out.println("Digite a tarefa a ser concluída: ");
+					System.out.println("Digite a tarefa a ser removida: ");
 					String tituloRetirar = sc.nextLine();
 					taskManager.removerTarefa(tituloRetirar);
-				} catch (IllegalStateException | IllegalArgumentException e) {
+				} catch (ListaVaziaException | IllegalArgumentException e) {
 					System.out.println("Erro: " + e.getMessage());
 				}
 				break;
