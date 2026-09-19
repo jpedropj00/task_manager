@@ -20,45 +20,51 @@ public class App {
 					4.Remover Tarefa
 					5.Sair
 					""");
-			String op = sc.nextLine();
+			if (!sc.hasNextLine()) {
+				System.out.println("Entrada encerrada. Saindo...");
+				break;
+			}
+			String op = sc.nextLine().trim();
 			switch (op) {
 			case "1":
 				try {
-					System.out.println("Digite o título: ");
-					String tituloCadastrar = sc.nextLine();
-					System.out.println("Digite a descrição: ");
-					String descricao = sc.nextLine();
+					System.out.print("Digite o título: ");
+					String tituloCadastrar = lerLinha(sc);
+					System.out.print("Digite a descrição: ");
+					String descricao = lerLinha(sc);
 					Tarefa t = new Tarefa(tituloCadastrar, descricao);
 					taskManager.adicionarTarefa(t);
-				}catch (IllegalArgumentException e) {
-					System.out.println("Erro:" + e.getMessage());
+					System.out.println("Tarefa \"" + t.getTitulo() + "\" cadastrada com sucesso.");
+				} catch (IllegalArgumentException e) {
+					System.out.println("Erro: " + e.getMessage());
 					System.out.println("Tente novamente...");
 				}
 				break;
 			case "2":
 				try {
 					taskManager.listarTarefas();
-				} catch(ListaVaziaException e) {
+				} catch (ListaVaziaException e) {
 					System.out.println("Erro: " + e.getMessage());
 				}
 				break;
 			case "3":
 				try {
 					taskManager.listarTarefas();
-					System.out.println("Digite a tarefa a ser concluída: ");
-					String tituloVerificar = sc.nextLine();
+					System.out.print("Digite a tarefa a ser concluída: ");
+					String tituloVerificar = lerLinha(sc);
 					taskManager.concluirTarefa(tituloVerificar);
-				
-				} catch(ListaVaziaException | IllegalArgumentException e) {
+					System.out.println("Tarefa concluída com sucesso.");
+				} catch (ListaVaziaException | IllegalArgumentException e) {
 					System.out.println("Erro: " + e.getMessage());
 				}
 				break;
 			case "4":
 				try {
 					taskManager.listarTarefas();
-					System.out.println("Digite a tarefa a ser removida: ");
-					String tituloRetirar = sc.nextLine();
+					System.out.print("Digite a tarefa a ser removida: ");
+					String tituloRetirar = lerLinha(sc);
 					taskManager.removerTarefa(tituloRetirar);
+					System.out.println("Tarefa removida com sucesso.");
 				} catch (ListaVaziaException | IllegalArgumentException e) {
 					System.out.println("Erro: " + e.getMessage());
 				}
@@ -71,8 +77,12 @@ public class App {
 				System.out.println("Entrada inválida");
 				break;
 			}
-			
+
 		} while (controller);
 		sc.close();
+	}
+
+	private static String lerLinha(Scanner sc) {
+		return sc.hasNextLine() ? sc.nextLine() : "";
 	}
 }
