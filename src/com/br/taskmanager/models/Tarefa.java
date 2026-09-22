@@ -3,11 +3,15 @@ package com.br.taskmanager.models;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Tarefa {
+/**
+ * Tarefa imutável: para alterar, cria-se uma nova instância com o mesmo id.
+ * Assim uma edição só "acontece" depois que o service grava no banco.
+ */
+public final class Tarefa {
     private final UUID id;
-    private String titulo;
-    private String descricao;
-    private boolean status;
+    private final String titulo;
+    private final String descricao;
+    private final boolean status;
 
     public Tarefa(String titulo, String descricao) {
         this(UUID.randomUUID(), titulo, descricao, false);
@@ -17,9 +21,12 @@ public class Tarefa {
         if (id == null) {
             throw new IllegalArgumentException("O id não pode ser nulo.");
         }
+        if (titulo == null || titulo.isBlank()) {
+            throw new IllegalArgumentException("O título não pode ficar em branco.");
+        }
         this.id = id;
-        setTitulo(titulo);
-        setDescricao(descricao);
+        this.titulo = titulo.trim();
+        this.descricao = (descricao == null) ? "" : descricao.trim();
         this.status = status;
     }
 
@@ -31,27 +38,13 @@ public class Tarefa {
         return titulo;
     }
 
-    public void setTitulo(String titulo) {
-        if (titulo == null || titulo.isBlank()) {
-            throw new IllegalArgumentException("O título não pode ficar em branco.");
-        }
-        this.titulo = titulo.trim();
-    }
-
     public String getDescricao() {
         return descricao;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = (descricao == null) ? "" : descricao.trim();
-    }
-
+    /** {@code true} quando a tarefa está concluída. */
     public boolean getStatus() {
         return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
     }
 
     @Override
@@ -72,8 +65,6 @@ public class Tarefa {
 
     @Override
     public String toString() {
-        return "Título: " + this.titulo
-                + "\nDescrição: " + (this.descricao.isEmpty() ? "(sem descrição)" : this.descricao)
-                + "\nStatus: " + (this.status ? "Concluída" : "Pendente");
+        return titulo + " (" + (status ? "Concluída" : "Pendente") + ")";
     }
 }

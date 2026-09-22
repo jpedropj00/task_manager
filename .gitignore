@@ -8,7 +8,9 @@ classes/
 # Banco de dados local
 *.db
 
-# Eclipse
+# Eclipse (o projeto é importado a partir do pom.xml)
+.classpath
+.project
 .settings/
 .metadata/
 
@@ -19,7 +21,3 @@ classes/
 # Sistema operacional
 Thumbs.db
 .DS_Store
-
-# Eclipse (o projeto e importado a partir do pom.xml)
-.classpath
-.project

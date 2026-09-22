@@ -1,6 +1,6 @@
 package com.br.taskmanager.database;
 
-import com.br.taskmanager.exceptions.DatabaseConnException;
+import com.br.taskmanager.exceptions.DatabaseException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -11,7 +11,7 @@ public final class DatabaseInitializer {
     private DatabaseInitializer() {
     }
 
-    public static void initDatabase() throws DatabaseConnException {
+    public static void initDatabase() throws DatabaseException {
         String sql = """
                 CREATE TABLE IF NOT EXISTS tasks (
                     id        TEXT    PRIMARY KEY,
@@ -26,7 +26,7 @@ public final class DatabaseInitializer {
         ) {
             statement.execute(sql);
         } catch (SQLException e) {
-            throw new DatabaseConnException("Erro ao inicializar banco de dados", e);
+            throw new DatabaseException("Erro ao inicializar banco de dados", e);
         }
     }
 }

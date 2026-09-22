@@ -1,6 +1,6 @@
 package com.br.taskmanager.controllers;
 
-import com.br.taskmanager.exceptions.DatabaseConnException;
+import com.br.taskmanager.exceptions.DatabaseException;
 import com.br.taskmanager.exceptions.TarefaNaoEncontradaException;
 import com.br.taskmanager.models.Tarefa;
 import com.br.taskmanager.services.TarefaService;
@@ -68,7 +68,7 @@ public class TarefaFormController {
                 tarefaSalva = atualizada;
             }
             fechar();
-        } catch (IllegalArgumentException | TarefaNaoEncontradaException | DatabaseConnException e) {
+        } catch (IllegalArgumentException | TarefaNaoEncontradaException | DatabaseException e) {
             mostrarErro(e.getMessage());
         }
     }

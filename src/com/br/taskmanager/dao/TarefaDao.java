@@ -1,7 +1,7 @@
 package com.br.taskmanager.dao;
 
 import com.br.taskmanager.database.ConnectionFactory;
-import com.br.taskmanager.exceptions.DatabaseConnException;
+import com.br.taskmanager.exceptions.DatabaseException;
 import com.br.taskmanager.models.Tarefa;
 
 import java.sql.Connection;
@@ -16,7 +16,7 @@ import java.util.UUID;
 public class TarefaDao implements GenericDao<Tarefa, UUID> {
 
     @Override
-    public void salvar(Tarefa tarefa) throws DatabaseConnException {
+    public void salvar(Tarefa tarefa) throws DatabaseException {
         String sql = """
                 INSERT INTO tasks (id, titulo, descricao, status)
                 VALUES (?, ?, ?, ?)
@@ -31,12 +31,12 @@ public class TarefaDao implements GenericDao<Tarefa, UUID> {
             statement.setBoolean(4, tarefa.getStatus());
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new DatabaseConnException("Erro ao salvar tarefa no banco de dados", e);
+            throw new DatabaseException("Erro ao salvar tarefa no banco de dados", e);
         }
     }
 
     @Override
-    public boolean atualizar(Tarefa tarefa) throws DatabaseConnException {
+    public boolean atualizar(Tarefa tarefa) throws DatabaseException {
         String sql = """
                 UPDATE tasks
                 SET titulo = ?, descricao = ?, status = ?
@@ -52,12 +52,12 @@ public class TarefaDao implements GenericDao<Tarefa, UUID> {
             statement.setString(4, tarefa.getId().toString());
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new DatabaseConnException("Erro ao atualizar tarefa no banco de dados", e);
+            throw new DatabaseException("Erro ao atualizar tarefa no banco de dados", e);
         }
     }
 
     @Override
-    public boolean excluir(Tarefa tarefa) throws DatabaseConnException {
+    public boolean excluir(Tarefa tarefa) throws DatabaseException {
         String sql = """
                 DELETE FROM tasks
                 WHERE id = ?
@@ -69,12 +69,12 @@ public class TarefaDao implements GenericDao<Tarefa, UUID> {
             statement.setString(1, tarefa.getId().toString());
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            throw new DatabaseConnException("Erro ao remover tarefa do banco de dados", e);
+            throw new DatabaseException("Erro ao remover tarefa do banco de dados", e);
         }
     }
 
     @Override
-    public Optional<Tarefa> buscarPorId(UUID id) throws DatabaseConnException {
+    public Optional<Tarefa> buscarPorId(UUID id) throws DatabaseException {
         String sql = """
                 SELECT id, titulo, descricao, status
                 FROM tasks
@@ -92,12 +92,12 @@ public class TarefaDao implements GenericDao<Tarefa, UUID> {
                 return Optional.empty();
             }
         } catch (SQLException e) {
-            throw new DatabaseConnException("Erro ao buscar tarefa no banco de dados", e);
+            throw new DatabaseException("Erro ao buscar tarefa no banco de dados", e);
         }
     }
 
     @Override
-    public List<Tarefa> buscarTodos() throws DatabaseConnException {
+    public List<Tarefa> buscarTodos() throws DatabaseException {
         String sql = """
                 SELECT id, titulo, descricao, status
                 FROM tasks
@@ -112,7 +112,7 @@ public class TarefaDao implements GenericDao<Tarefa, UUID> {
                 tarefas.add(mapear(resultSet));
             }
         } catch (SQLException e) {
-            throw new DatabaseConnException("Erro ao listar tarefas", e);
+            throw new DatabaseException("Erro ao listar tarefas", e);
         }
         return tarefas;
     }

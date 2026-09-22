@@ -1,6 +1,6 @@
 package com.br.taskmanager.controllers;
 
-import com.br.taskmanager.exceptions.DatabaseConnException;
+import com.br.taskmanager.exceptions.DatabaseException;
 import com.br.taskmanager.exceptions.TarefaNaoEncontradaException;
 import com.br.taskmanager.models.FiltroTarefa;
 import com.br.taskmanager.models.OrdenacaoTarefa;
@@ -98,7 +98,7 @@ public class TelaPrincipalController {
         Tarefa atualizada = new Tarefa(tarefa.getId(), tarefa.getTitulo(), tarefa.getDescricao(), !tarefa.getStatus());
         try {
             tarefaService.atualizarTarefa(atualizada);
-        } catch (TarefaNaoEncontradaException | DatabaseConnException | IllegalArgumentException e) {
+        } catch (TarefaNaoEncontradaException | DatabaseException | IllegalArgumentException e) {
             mostrarErro(e);
         }
         carregarTarefas(atualizada);
@@ -113,7 +113,7 @@ public class TelaPrincipalController {
 
         try {
             tarefaService.excluirTarefa(tarefa);
-        } catch (TarefaNaoEncontradaException | DatabaseConnException | IllegalArgumentException e) {
+        } catch (TarefaNaoEncontradaException | DatabaseException | IllegalArgumentException e) {
             mostrarErro(e);
         }
         carregarTarefas(null);
@@ -137,8 +137,14 @@ public class TelaPrincipalController {
             janelaFormulario.setScene(cena);
             janelaFormulario.showAndWait();
 
-            if (formulario.getTarefaSalva() != null) {
-                carregarTarefas(formulario.getTarefaSalva());
+            Tarefa salva = formulario.getTarefaSalva();
+            if (salva != null) {
+                // Sem isso, uma tarefa nova (pendente) salva com o filtro em
+                // "Concluídas" some da lista e parece que o cadastro falhou.
+                if (!comboFiltro.getValue().test(salva)) {
+                    comboFiltro.setValue(FiltroTarefa.TODAS);
+                }
+                carregarTarefas(salva);
             }
         } catch (IOException e) {
             mostrarErro(new IllegalStateException("Não foi possível abrir o formulário.", e));
@@ -153,9 +159,12 @@ public class TelaPrincipalController {
         confirmacao.initOwner(janela());
         confirmacao.setTitle("Confirmar remoção");
         confirmacao.setHeaderText("Remover a tarefa \"" + tarefa.getTitulo() + "\"?");
+        Telas.aplicarEstilo(confirmacao);
 
         // Enter confirma a opção segura: uma remoção acidental não tem volta.
-        ((Button) confirmacao.getDialogPane().lookupButton(remover)).setDefaultButton(false);
+        Button botaoConfirmar = (Button) confirmacao.getDialogPane().lookupButton(remover);
+        botaoConfirmar.setDefaultButton(false);
+        botaoConfirmar.getStyleClass().add("botao-perigo");
         ((Button) confirmacao.getDialogPane().lookupButton(cancelar)).setDefaultButton(true);
 
         return confirmacao.showAndWait().orElse(cancelar) == remover;
@@ -168,12 +177,12 @@ public class TelaPrincipalController {
     private void carregarTarefas(Tarefa paraSelecionar) {
         try {
             List<Tarefa> todas = tarefaService.listarTarefas();
-            List<Tarefa> visiveis = tarefaService.listarTarefas(
-                    comboFiltro.getValue(), comboOrdenacao.getValue().getComparador());
+            List<Tarefa> visiveis = tarefaService.organizar(
+                    todas, comboFiltro.getValue(), comboOrdenacao.getValue().getComparador());
 
             listaTarefas.getItems().setAll(visiveis);
             atualizarResumo(todas);
-        } catch (DatabaseConnException e) {
+        } catch (DatabaseException e) {
             listaTarefas.getItems().clear();
             labelResumo.setText("");
             mostrarErro(e);
@@ -218,6 +227,7 @@ public class TelaPrincipalController {
         alerta.setTitle("Erro");
         alerta.setHeaderText(e.getMessage());
         alerta.setContentText(e.getCause() != null ? e.getCause().getMessage() : null);
+        Telas.aplicarEstilo(alerta);
         alerta.showAndWait();
     }
 

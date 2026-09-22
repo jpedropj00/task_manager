@@ -159,3 +159,25 @@
 .erro {
     -fx-text-fill: #b91c1c;
 }
+
+/* ---------- Diálogos (confirmação e erros) ---------- */
+
+.dialog-pane {
+    -fx-background-color: white;
+}
+
+.dialog-pane > .header-panel {
+    -fx-background-color: #f8f9fb;
+    -fx-border-color: transparent transparent #e2e8f0 transparent;
+}
+
+.dialog-pane > .header-panel .label {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+.dialog-pane > .content.label {
+    -fx-text-fill: #475569;
+    -fx-padding: 16 20 8 20;
+}

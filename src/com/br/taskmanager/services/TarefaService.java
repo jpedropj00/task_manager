@@ -6,9 +6,9 @@ import com.br.taskmanager.exceptions.TarefaNaoEncontradaException;
 import com.br.taskmanager.models.Tarefa;
 import com.br.taskmanager.utils.ListaUtils;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -30,37 +30,38 @@ public class TarefaService {
     }
 
     /**
-     * Lista as tarefas que atendem ao filtro, na ordem pedida.
+     * Devolve uma nova lista com as tarefas que atendem ao filtro, na ordem pedida.
      *
-     * Os dois parâmetros usam {@code ? super Tarefa} porque apenas consomem
-     * tarefas: um critério ou comparador escrito para um supertipo de Tarefa
-     * também serve aqui.
+     * {@code tarefas} usa {@code ? extends Tarefa} porque só lemos dela.
+     * {@code filtro} e {@code ordem} usam {@code ? super Tarefa} porque apenas
+     * consomem tarefas: um critério escrito para um supertipo também serve.
      */
-    public List<Tarefa> listarTarefas(Predicate<? super Tarefa> filtro, Comparator<? super Tarefa> ordem) {
-        List<Tarefa> tarefas = ListaUtils.filtrar(tarefaDao.buscarTodos(), filtro);
-        tarefas.sort(ordem);
-        return tarefas;
-    }
-
-    public Optional<Tarefa> buscarPorId(UUID id) {
-        return tarefaDao.buscarPorId(id);
+    public List<Tarefa> organizar(Collection<? extends Tarefa> tarefas,
+                                  Predicate<? super Tarefa> filtro,
+                                  Comparator<? super Tarefa> ordem) {
+        List<Tarefa> resultado = ListaUtils.filtrar(tarefas, filtro);
+        resultado.sort(ordem);
+        return resultado;
     }
 
     public void salvarTarefa(Tarefa tarefa) {
         validar(tarefa);
-        verificarTituloDisponivel(tarefa);
+        verificarTituloDisponivel(tarefa, tarefaDao.buscarTodos());
         tarefaDao.salvar(tarefa);
     }
 
     public void atualizarTarefa(Tarefa tarefa) throws TarefaNaoEncontradaException {
         validar(tarefa);
-        Tarefa atual = tarefaDao.buscarPorId(tarefa.getId())
+        List<Tarefa> existentes = tarefaDao.buscarTodos();
+        Tarefa atual = existentes.stream()
+                .filter(tarefa::equals)
+                .findFirst()
                 .orElseThrow(() -> new TarefaNaoEncontradaException(MENSAGEM_NAO_ENCONTRADA));
 
         // Só checa duplicata quando o título muda: concluir ou editar a descrição
         // de uma tarefa nunca deve ser bloqueado pelo próprio título dela.
         if (!atual.getTitulo().equalsIgnoreCase(tarefa.getTitulo())) {
-            verificarTituloDisponivel(tarefa);
+            verificarTituloDisponivel(tarefa, existentes);
         }
 
         if (!tarefaDao.atualizar(tarefa)) {
@@ -81,8 +82,8 @@ public class TarefaService {
         }
     }
 
-    private void verificarTituloDisponivel(Tarefa tarefa) {
-        boolean duplicado = tarefaDao.buscarTodos().stream()
+    private void verificarTituloDisponivel(Tarefa tarefa, Collection<? extends Tarefa> existentes) {
+        boolean duplicado = existentes.stream()
                 .anyMatch(outra -> !outra.equals(tarefa)
                         && outra.getTitulo().equalsIgnoreCase(tarefa.getTitulo()));
         if (duplicado) {

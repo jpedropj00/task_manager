@@ -1,7 +1,7 @@
 package com.br.taskmanager.app;
 
 import com.br.taskmanager.database.DatabaseInitializer;
-import com.br.taskmanager.exceptions.DatabaseConnException;
+import com.br.taskmanager.exceptions.DatabaseException;
 import com.br.taskmanager.views.Telas;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -18,11 +18,12 @@ public class TaskManagerApp extends Application {
     public void start(Stage stage) throws IOException {
         try {
             DatabaseInitializer.initDatabase();
-        } catch (DatabaseConnException e) {
+        } catch (DatabaseException e) {
             Alert alerta = new Alert(Alert.AlertType.ERROR);
             alerta.setTitle("Erro ao iniciar");
             alerta.setHeaderText(e.getMessage());
             alerta.setContentText(e.getCause() != null ? e.getCause().getMessage() : null);
+            Telas.aplicarEstilo(alerta);
             alerta.showAndWait();
             Platform.exit();
             return;
