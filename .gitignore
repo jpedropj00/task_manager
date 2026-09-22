@@ -1,11 +1,25 @@
 # Artefatos de compilação
 bin/
+target/
+classes/
 *.class
+*.jar
+
+# Banco de dados local
+*.db
 
 # Eclipse
 .settings/
 .metadata/
 
+# IntelliJ IDEA
+.idea/
+*.iml
+
 # Sistema operacional
 Thumbs.db
 .DS_Store
+
+# Eclipse (o projeto e importado a partir do pom.xml)
+.classpath
+.project

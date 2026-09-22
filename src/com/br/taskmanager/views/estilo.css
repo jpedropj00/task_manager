@@ -1,0 +1,161 @@
+/* Paleta: fundo #f8f9fb, texto #1e293b, texto secundário #64748b */
+
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 13px;
+    -fx-accent: #1e293b;
+    -fx-focus-color: #1e293b;
+    -fx-faint-focus-color: transparent;
+}
+
+.raiz {
+    -fx-background-color: #f8f9fb;
+}
+
+/* ---------- Cabeçalho ---------- */
+
+.cabecalho {
+    -fx-background-color: white;
+    -fx-padding: 20 30 20 30;
+    -fx-spacing: 4;
+    -fx-border-color: transparent transparent #e2e8f0 transparent;
+}
+
+.titulo-app {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+.texto-secundario {
+    -fx-text-fill: #64748b;
+}
+
+.conteudo {
+    -fx-padding: 20 30 25 30;
+}
+
+/* ---------- Lista de tarefas ---------- */
+
+.list-view {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.list-view .placeholder .label {
+    -fx-text-fill: #64748b;
+    -fx-font-size: 14px;
+}
+
+.list-cell,
+.list-cell:empty {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.tarefa-cell:filled {
+    -fx-background-color: #e2e8f0, white;
+    -fx-background-insets: 0 0 8 0, 1 1 9 1;
+    -fx-background-radius: 8, 7;
+    -fx-padding: 14 18 22 18;
+}
+
+.tarefa-cell:filled:selected {
+    -fx-background-color: #1e293b, #f1f5f9;
+    -fx-background-insets: 0 0 8 0, 2 2 10 2;
+}
+
+.tarefa-titulo {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+.tarefa-descricao {
+    -fx-text-fill: #64748b;
+}
+
+.tarefa-cell.concluida .tarefa-titulo {
+    -fx-text-fill: #94a3b8;
+}
+
+.tarefa-cell.concluida .tarefa-titulo .text {
+    -fx-strikethrough: true;
+}
+
+.status {
+    -fx-padding: 3 10 3 10;
+    -fx-background-radius: 10;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.status-pendente {
+    -fx-background-color: #fef3c7;
+    -fx-text-fill: #92400e;
+}
+
+.status-concluida {
+    -fx-background-color: #dcfce7;
+    -fx-text-fill: #166534;
+}
+
+/* ---------- Botões ---------- */
+
+.button,
+.combo-box {
+    -fx-background-color: #cbd5e1, white;
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 5, 4;
+    -fx-text-fill: #334155;
+    -fx-cursor: hand;
+}
+
+.button {
+    -fx-padding: 7 16 7 16;
+}
+
+.button:hover,
+.combo-box:hover {
+    -fx-background-color: #94a3b8, #f8fafc;
+}
+
+.button:focused,
+.combo-box:focused {
+    -fx-background-color: #1e293b, white;
+}
+
+.botao-principal,
+.botao-principal:focused {
+    -fx-background-color: #1e293b;
+    -fx-background-insets: 0;
+    -fx-background-radius: 5;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.botao-principal:hover {
+    -fx-background-color: #334155;
+}
+
+.botao-perigo {
+    -fx-text-fill: #b91c1c;
+}
+
+/* ---------- Formulário ---------- */
+
+.formulario {
+    -fx-padding: 24;
+    -fx-background-color: white;
+}
+
+.titulo-form {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e293b;
+}
+
+.erro {
+    -fx-text-fill: #b91c1c;
+}
